@@ -1,6 +1,6 @@
 import os
 import requests
-
+from flask import redirect, url_for
 from pprint import PrettyPrinter
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
@@ -22,6 +22,7 @@ pp = PrettyPrinter(indent=4)
 
 API_KEY = os.getenv('API_KEY')
 API_URL = 'http://api.openweathermap.org/data/2.5/weather'
+
 
 
 ################################################################################
@@ -50,33 +51,22 @@ def call_weather(parameters):
 @app.route('/results')
 def results():
     """Displays results for current weather conditions."""
-    # Use 'request.args' to retrieve the city & units from the query
-    # parameters.
     city = request.args.get('city')
     units = request.args.get('units')
 
-
+    if not city:
+        return redirect(url_for('error', message='Invalid city input'))
+    
     params = {
-        # : Enter query parameters here for the 'appid' (your api key),
-        # the city, and the units (metric or imperial).
-        # See the documentation here: https://openweathermap.org/current
+
         'q': city,
         'appid': API_KEY,
         'units': units
     }
 
     result_json = call_weather(params)
-    # result_json = requests.get(API_URL, params=params).json()
 
-    # Uncomment the line below to see the results of the API call!
-    # pp.pprint(result_json)
-
-    # Replace the empty variables below with their appropriate values.
-    # You'll need to retrieve these from the result_json object above.
-
-    # For the sunrise & sunset variables, I would recommend to turn them into
-    # datetime objects. You can do so using the `datetime.fromtimestamp()` 
-    # function.
+    #Time variables
     raw_datenow = datetime.now()
     formatted_datenow = raw_datenow.strftime('%B %d, %Y at %I:%M %p')
 
@@ -92,12 +82,16 @@ def results():
     formatted_local_sunrise = local_sunrise.strftime('%I:%M %p')
     formatted_local_sunset = local_sunset.strftime('%I:%M %p')
 
+    icon_code = result_json['weather'][0]['icon']
+    icon_url = f'https://openweathermap.org/img/wn/{icon_code}@2x.png'
+
 
     context = {
         'date': formatted_datenow,
         'city': result_json['name'],
-        'description': result_json['weather'][0]['description'],
+        'description': result_json['weather'][0]['description'].upper(),
         'distance_letter': get_distance_for_units(units),
+        'icon': icon_url,
         'temp': result_json['main']['temp'],
         'humidity': result_json['main']['humidity'],
         'wind_speed': result_json['wind']['speed'],
@@ -118,8 +112,10 @@ def comparison_results():
     city2 = request.args.get('city2')
     units = request.args.get('units_c')
 
-    # TODO: Make 2 API calls, one for each city. HINT: You may want to write a 
+    # Make 2 API calls, one for each city. HINT: You may want to write a 
     # helper function for this!
+    if not city1 or not city2:
+        return redirect(url_for('error', message='Invalid city input'))
 
     city1_params = {
     # : Enter query parameters here for the 'appid' (your api key),
@@ -141,7 +137,7 @@ def comparison_results():
     city1_result = call_weather(city1_params)
     city2_result = call_weather(city2_params)
 
-    # TODO: Pass the information for both cities in the context. Make sure to
+    # Pass the information for both cities in the context. Make sure to
     # pass info for the temperature, humidity, wind speed, and sunset time!
     # HINT: It may be useful to create 2 new dictionaries, `city1_info` and 
     # `city2_info`, to organize the data.
@@ -168,7 +164,8 @@ def comparison_results():
     formatted_local_sunset1 = local_sunset1.strftime('%I:%M %p')
 
     #compare temp
-    degree_difference = abs(city1_result['main']['temp'] - abs(city2_result['main']['temp']))
+    raw_degree_difference = abs(city1_result['main']['temp'] - abs(city2_result['main']['temp']))
+    degree_difference = round(raw_degree_difference, 2)
     if city1_result['main']['temp'] > city2_result['main']['temp']:
         city1tempdiff = 'warmer'
     elif city1_result['main']['temp'] < city2_result['main']['temp']:
@@ -233,6 +230,10 @@ def comparison_results():
 
     return render_template('comparison_results.html', **context)
 
+@app.route('/error')
+def error():
+    message = request.args.get('message', 'An error occurred.')
+    return render_template('error.html', message=message)
 
 if __name__ == '__main__':
     app.config['ENV'] = 'development'

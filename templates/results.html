@@ -1,26 +1,30 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<section>
-    {#
-        TODO: Replace the hard-coded city and date below with data from the 
-        server 
-    #}
-    <h1>Weather in {{ city }}</h1>
-    <p>on {{ date }}</p>
-    
-    {#
-        TODO: Add the temperature, description, humidity, wind speed, sunrise,
-        & sunset below to replace the [ ].
-    #}
-    <ul>
-        <li>Temperature: {{ temp }} {{ units_letter }} </li>
-        <li>Description: {{ description }} </li>
-        <li>Humidity: {{ humidity }} % </li>
-        <li>Wind speed: {{ wind_speed }} {{ distance_letter }} </li>
-        <li>Sunrise: {{ sunrise }} </li>
-        <li>Sunset: {{ sunset }} </li>
+<section class="weather-form" id="results">
+
+    <h2>Today's weather in {{ city }}:</h2>
+
+    <ul id="details">
+            <li>🌡️ Temperature: {{ temp }}°{{ units_letter }}</li>
+            <li>💧 Humidity: {{ humidity }} % </li>
+            <li>💨 Wind speed: {{ wind_speed }} {{ distance_letter }} </li>
     </ul>
+    
+    <section id="weather-card">
+        <h3>{{ description }}</h3>
+        <img src='{{ icon }}'/>
+    </section>
+
+
+    <section id='sunset'>
+        <h3>Sunrise/Sunset</h3>
+        <ul>
+            <li>🌅 Sunrise: {{ sunrise }} </li>
+            <li>🌙 Sunset: {{ sunset }} </li>
+        </ul>
+    </section>
+
     
 </section>
 {% endblock %}

@@ -1,13 +1,23 @@
+html, body {
+    min-height: 100%;
+}
 body {
-    background-color: #e6faff;
+    background: linear-gradient(to bottom right, #21b0d4, #b7e1eb, #21b0d4);
+    background-repeat: no-repeat;
     display: flex;
     justify-content: center;
+    align-items: flex-start;
     font-family: "Roboto", sans-serif;
 }
 
 main {
     width: 800px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
+
 
 main > section {
     background-color: #fff;
@@ -16,13 +26,60 @@ main > section {
     padding: 20px;
     margin-top: 20px;
     width: 100%;
+    border-radius: 1em;
 }
 
 fieldset {
     border: 1px solid #000;
+    border-radius: 1em;
 }
-
+h1 {
+    font-size: 5em;
+}
 h1 a {
     color: #000;
     text-decoration: none;
 }
+h3 {
+    margin: 0;
+}
+li {
+    list-style: none;
+}
+
+ul {
+    padding: 0;
+}
+#results {
+    display: grid;
+    background-color: rgb(189, 197, 211);
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-areas: " h h h"
+                         " w c s "
+
+}
+#results h2 {
+    grid-area: h;
+    text-align: center;
+}
+#details {
+    grid-area: w;
+}
+#weather-card {
+    grid-area: c;
+
+}
+#sunset {
+
+    grid-area: s;   
+}
+#sunset, #weather-card, #details, #comparison_results {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.input-text, .submit {
+    border-radius: 1em;
+}
+

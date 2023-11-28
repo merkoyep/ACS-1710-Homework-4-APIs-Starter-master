@@ -1,21 +1,13 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<section class="weather-form">
-    {# 
-        Replace the hard-coded cities and date below with data from the 
-        server.
-    #}
-    <h1>Weather in {{ city1 }} and {{ city2 }}</h1>
+<section class="weather-form" id="comparison_results">
+
+    <h2>Weather in {{ city1 }} and {{ city2 }}</h2>
     <p>{{ date }}</p>
 
-
-    {#
-        Add the temperature, description, and min & max temperature below.
-        Replace 'F' with the appropriate units.
-    #}
     <p>
-        It is {{ temp_difference }} {{ units_letter }} {{ temp_warm_cold }} in {{ city1 }} than in {{ city2 }} today.
+        It is {{ temp_difference }}°{{ units_letter }} {{ temp_warm_cold }} in {{ city1 }} than in {{ city2 }} today.
     </p>
 
     <p>
